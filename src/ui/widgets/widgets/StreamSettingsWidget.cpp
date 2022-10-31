@@ -290,6 +290,11 @@ void StreamSettingsWidget::on_securityTypeCB_currentIndexChanged(int arg1)
     stream.security = securityTypeCB->itemText(arg1).toLower();
 }
 
+void StreamSettingsWidget::on_fingerprintCB_currentIndexChanged(int arg1)
+{
+    stream.tlsSettings.fingerprint = fingerprintCB->itemText(arg1).toLower();
+}
+
 //
 // Dirty hack, since XTLSSettings are the same as TLSSettings (Split them if required in the future)
 //

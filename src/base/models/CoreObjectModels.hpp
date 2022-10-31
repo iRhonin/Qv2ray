@@ -310,6 +310,7 @@ namespace Qv2ray::base::objects
             bool allowInsecure = false;
             bool enableSessionResumption = false;
             bool disableSystemRoot = false;
+            QString fingerprint;
             QList<QString> alpn;
             QList<QString> pinnedPeerCertificateChainSha256;
             QList<CertificateObject> certificates;
