@@ -1,11 +1,7 @@
 name: Qv2ray build debian package
 
 on:
-  push:
-    branches:
-      - dev
-  release:
-    types: [prereleased]
+  workflow_dispatch:
 
 # unsafe {
 env:
