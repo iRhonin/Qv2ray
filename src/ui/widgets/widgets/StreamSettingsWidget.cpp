@@ -50,7 +50,8 @@ void StreamSettingsWidget::SetStreamObject(const StreamSettingsObject &sso)
         allowInsecureCB->setChecked(stream.prefix##Settings.allowInsecure);                                                                          \
         enableSessionResumptionCB->setChecked(stream.prefix##Settings.enableSessionResumption);                                                      \
         disableSystemRoot->setChecked(stream.prefix##Settings.disableSystemRoot);                                                                    \
-        alpnTxt->setText(stream.prefix##Settings.alpn.join("|"));                                                                                    \
+        alpnH2CB->setChecked(stream.prefix##Settings.alpn.contains("h2"));                                                                             \
+        alpnHttpCB->setChecked(stream.prefix##Settings.alpn.contains("http/1.1"));                                                                     \
         if (fingerprintIndexMap.contains(stream.prefix##Settings.fingerprint))                                                                       \
             fingerprintCB->setCurrentIndex(fingerprintIndexMap[stream.prefix##Settings.fingerprint]);                                                \
         else                                                                                                                                         \
@@ -317,21 +318,38 @@ void StreamSettingsWidget::on_allowInsecureCB_stateChanged(int arg1)
     stream.xtlsSettings.allowInsecure = arg1 == Qt::Checked;
 }
 
+void StreamSettingsWidget::on_alpnH2CB_stateChanged(int arg1)
+{
+    if (arg1 == Qt::Checked) {
+    	if (!stream.tlsSettings.alpn.contains("h2"))
+    	    stream.tlsSettings.alpn.insert(0,"h2");
+    	if (!stream.xtlsSettings.alpn.contains("h2"))
+    	    stream.xtlsSettings.alpn.insert(0,"h2");
+
+    } else {
+    	stream.tlsSettings.alpn.removeAll("h2");
+    	stream.xtlsSettings.alpn.removeAll("h2");
+    }
+}
+
+void StreamSettingsWidget::on_alpnHttpCB_stateChanged(int arg1)
+{
+    if (arg1 == Qt::Checked) {
+    	if (!stream.tlsSettings.alpn.contains("http/1.1"))
+    	    stream.tlsSettings.alpn.append("http/1.1");
+    	if (!stream.xtlsSettings.alpn.contains("http/1.1"))
+    	    stream.xtlsSettings.alpn.append("http/1.1");
+
+    } else {
+    	stream.tlsSettings.alpn.removeAll("http/1.1");
+    	stream.xtlsSettings.alpn.removeAll("http/1.1");
+    }
+}
+
 void StreamSettingsWidget::on_enableSessionResumptionCB_stateChanged(int arg1)
 {
     stream.tlsSettings.enableSessionResumption = arg1 == Qt::Checked;
     stream.xtlsSettings.enableSessionResumption = arg1 == Qt::Checked;
-}
-
-void StreamSettingsWidget::on_alpnTxt_textEdited(const QString &arg1)
-{
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
-    stream.tlsSettings.alpn = arg1.split('|', Qt::SplitBehaviorFlags::SkipEmptyParts);
-    stream.xtlsSettings.alpn = arg1.split('|', Qt::SplitBehaviorFlags::SkipEmptyParts);
-#else
-    stream.tlsSettings.alpn = arg1.split('|', QString::SkipEmptyParts);
-    stream.xtlsSettings.alpn = arg1.split('|', QString::SkipEmptyParts);
-#endif
 }
 
 void StreamSettingsWidget::on_disableSystemRoot_stateChanged(int arg1)

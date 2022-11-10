@@ -48,7 +48,8 @@ class StreamSettingsWidget
 
     // TLS/XTLS
     void on_allowInsecureCB_stateChanged(int arg1);
-    void on_alpnTxt_textEdited(const QString &arg1);
+    void on_alpnH2CB_stateChanged(int arg1);
+    void on_alpnHttpCB_stateChanged(int arg1);
     void on_enableSessionResumptionCB_stateChanged(int arg1);
     void on_securityTypeCB_currentIndexChanged(int arg1);
     void on_fingerprintCB_currentIndexChanged(int arg1);
