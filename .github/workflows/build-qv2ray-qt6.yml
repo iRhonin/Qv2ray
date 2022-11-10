@@ -1,11 +1,7 @@
 name: Qv2ray build matrix - Qt6
 
 on:
-  push:
-    branches-ignore:
-      - l10n_dev
-  release:
-    types: [prereleased]
+  workflow_dispatch:
 
 jobs:
   check_commit_msg:
@@ -25,7 +21,7 @@ jobs:
     if: ${{ !contains( needs.check_commit_msg.outputs.commit_message, '!QT6') }}
     strategy:
       matrix:
-        ui_type: [QWidget, QML]
+        ui_type: [QWidget]
         platform: [ubuntu-20.04, windows-latest]
         build_type: [RelWithDebInfo, Release]
         qt_version: [6.0.0]
@@ -126,6 +122,7 @@ jobs:
             -DCMAKE_INSTALL_PREFIX=installed \
             -DQV2RAY_UI_TYPE=${{ matrix.ui_type }} \
             -DQV2RAY_QT6=ON \
+            -DQV2RAY_USE_V5_CORE=OFF \
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 \
             -DDS_STORE_SCRIPT=ON \
@@ -147,6 +144,7 @@ jobs:
           cmake .. -GNinja \
             -DQV2RAY_UI_TYPE=${{ matrix.ui_type }} \
             -DQV2RAY_QT6=ON \
+            -DQV2RAY_USE_V5_CORE=OFF \
             -DCMAKE_INSTALL_PREFIX=./deployment \
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           cmake --build . --parallel $(nproc)
@@ -162,6 +160,7 @@ jobs:
           cmake .. -GNinja \
             -DQV2RAY_UI_TYPE=${{ matrix.ui_type }} \
             -DQV2RAY_QT6=ON \
+            -DQV2RAY_USE_V5_CORE=OFF \
             -DCMAKE_INSTALL_PREFIX=./AppDir/usr \
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
             -DQV2RAY_TRANSLATION_PATH=QApplication::applicationDirPath\(\)+"/../share/qv2ray/lang"
