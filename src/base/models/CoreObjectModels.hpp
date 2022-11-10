@@ -315,9 +315,9 @@ namespace Qv2ray::base::objects
             QList<QString> pinnedPeerCertificateChainSha256;
             QList<CertificateObject> certificates;
             JSONSTRUCT_COMPARE(TLSObject, serverName, allowInsecure, enableSessionResumption, disableSystemRoot, alpn,
-                               pinnedPeerCertificateChainSha256, certificates)
+                               fingerprint, pinnedPeerCertificateChainSha256, certificates)
             JSONSTRUCT_REGISTER(TLSObject, F(serverName, allowInsecure, enableSessionResumption, disableSystemRoot, alpn,
-                                             pinnedPeerCertificateChainSha256, certificates))
+                                             fingerprint, pinnedPeerCertificateChainSha256, certificates))
         };
         //
         //
@@ -327,10 +327,11 @@ namespace Qv2ray::base::objects
             bool allowInsecure = false;
             bool enableSessionResumption = false;
             bool disableSystemRoot = false;
+            QString fingerprint;
             QList<QString> alpn;
             QList<CertificateObject> certificates;
-            JSONSTRUCT_COMPARE(XTLSObject, serverName, allowInsecure, enableSessionResumption, disableSystemRoot, alpn, certificates)
-            JSONSTRUCT_REGISTER(XTLSObject, F(serverName, allowInsecure, enableSessionResumption, disableSystemRoot, alpn, certificates))
+            JSONSTRUCT_COMPARE(XTLSObject, serverName, allowInsecure, enableSessionResumption, disableSystemRoot, alpn, fingerprint, certificates)
+            JSONSTRUCT_REGISTER(XTLSObject, F(serverName, allowInsecure, enableSessionResumption, disableSystemRoot, alpn, fingerprint, certificates))
         };
     } // namespace transfer
     //

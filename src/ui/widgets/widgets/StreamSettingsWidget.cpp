@@ -36,10 +36,13 @@ void StreamSettingsWidget::SetStreamObject(const StreamSettingsObject &sso)
     // TLS XTLS
     {
         const static QMap<QString, int> securityIndexMap{ { "none", 0 }, { "tls", 1 }, { "xtls", 2 } };
+        const static QMap<QString, int> fingerprintIndexMap{ { "", 0 }, { "chrome", 1}, { "firefox", 2}, {"safari", 3}, {"randomized", 4}};
+
         if (securityIndexMap.contains(stream.security))
             securityTypeCB->setCurrentIndex(securityIndexMap[stream.security]);
         else
             LOG("Unsupported Security Type:", stream.security);
+
 
 #define tls_xtls_process(prefix)                                                                                                                     \
     {                                                                                                                                                \
@@ -48,6 +51,10 @@ void StreamSettingsWidget::SetStreamObject(const StreamSettingsObject &sso)
         enableSessionResumptionCB->setChecked(stream.prefix##Settings.enableSessionResumption);                                                      \
         disableSystemRoot->setChecked(stream.prefix##Settings.disableSystemRoot);                                                                    \
         alpnTxt->setText(stream.prefix##Settings.alpn.join("|"));                                                                                    \
+        if (fingerprintIndexMap.contains(stream.prefix##Settings.fingerprint))                                                                       \
+            fingerprintCB->setCurrentIndex(fingerprintIndexMap[stream.prefix##Settings.fingerprint]);                                                \
+        else                                                                                                                                         \
+            LOG("Unsupported fingerprint value:", stream.prefix##Settings.fingerprint);                                                              \
     }
 
         tls_xtls_process(tls);
