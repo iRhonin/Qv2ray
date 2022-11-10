@@ -105,6 +105,11 @@
      </item>
      <item>
       <property name="text">
+       <string notr="true">xtls-rprx-vision-udp443</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
        <string notr="true">xtls-rprx-splice-udp443</string>
       </property>
      </item>
