@@ -33,10 +33,10 @@ void StreamSettingsWidget::SetStreamObject(const StreamSettingsObject &sso)
 {
     stream = sso;
     transportCombo->setCurrentText(stream.network);
-    // TLS XTLS
+    // TLS XTLS Reality
     {
-        const static QMap<QString, int> securityIndexMap{ { "none", 0 }, { "tls", 1 }, { "xtls", 2 } };
-        const static QMap<QString, int> fingerprintIndexMap{ { "", 0 }, { "chrome", 1}, { "firefox", 2}, {"safari", 3}, {"randomized", 4}};
+        const static QMap<QString, int> securityIndexMap{ { "none", 0 }, { "tls", 1 }, {"reality", 2}, { "xtls", 3 } };
+        const static QMap<QString, int> fingerprintIndexMap{ { "", 0 }, { "chrome", 1}, { "firefox", 2}, {"safari", 3}, {"ios", 4}, {"android", 5}, {"edge", 6}, {"randomized", 7}};
 
         if (securityIndexMap.contains(stream.security))
             securityTypeCB->setCurrentIndex(securityIndexMap[stream.security]);
@@ -44,25 +44,46 @@ void StreamSettingsWidget::SetStreamObject(const StreamSettingsObject &sso)
             LOG("Unsupported Security Type:", stream.security);
 
 
-#define tls_xtls_process(prefix)                                                                                                                     \
-    {                                                                                                                                                \
-        serverNameTxt->setText(stream.prefix##Settings.serverName);                                                                                  \
-        allowInsecureCB->setChecked(stream.prefix##Settings.allowInsecure);                                                                          \
-        enableSessionResumptionCB->setChecked(stream.prefix##Settings.enableSessionResumption);                                                      \
-        disableSystemRoot->setChecked(stream.prefix##Settings.disableSystemRoot);                                                                    \
-        alpnH2CB->setChecked(stream.prefix##Settings.alpn.contains("h2"));                                                                             \
-        alpnHttpCB->setChecked(stream.prefix##Settings.alpn.contains("http/1.1"));                                                                     \
-        if (fingerprintIndexMap.contains(stream.prefix##Settings.fingerprint))                                                                       \
-            fingerprintCB->setCurrentIndex(fingerprintIndexMap[stream.prefix##Settings.fingerprint]);                                                \
-        else                                                                                                                                         \
-            LOG("Unsupported fingerprint value:", stream.prefix##Settings.fingerprint);                                                              \
+        #define prefix stream.security
+        if (stream.security == "tls" )
+        {
+            serverNameTxt->setText(stream.tlsSettings.serverName);  
+            allowInsecureCB->setChecked(stream.tlsSettings.allowInsecure);
+            enableSessionResumptionCB->setChecked(stream.tlsSettings.enableSessionResumption);
+            disableSystemRoot->setChecked(stream.tlsSettings.disableSystemRoot);
+            alpnH2CB->setChecked(stream.tlsSettings.alpn.contains("h2"));
+            alpnHttpCB->setChecked(stream.tlsSettings.alpn.contains("http/1.1"));
+            if (fingerprintIndexMap.contains(stream.tlsSettings.fingerprint))
+                fingerprintCB->setCurrentIndex(fingerprintIndexMap[stream.tlsSettings.fingerprint]);
+            else
+                LOG("Unsupported fingerprint value:", stream.tlsSettings.fingerprint);
+        }
+        else if (stream.security == "xtls" )
+        {
+            serverNameTxt->setText(stream.xtlsSettings.serverName);  
+            allowInsecureCB->setChecked(stream.xtlsSettings.allowInsecure);
+            enableSessionResumptionCB->setChecked(stream.xtlsSettings.enableSessionResumption);
+            disableSystemRoot->setChecked(stream.xtlsSettings.disableSystemRoot);
+            alpnH2CB->setChecked(stream.xtlsSettings.alpn.contains("h2"));
+            alpnHttpCB->setChecked(stream.xtlsSettings.alpn.contains("http/1.1"));
+            if (fingerprintIndexMap.contains(stream.xtlsSettings.fingerprint))
+                fingerprintCB->setCurrentIndex(fingerprintIndexMap[stream.xtlsSettings.fingerprint]);
+            else
+                LOG("Unsupported fingerprint value:", stream.xtlsSettings.fingerprint);
+        }
+        else if (prefix == "reality")
+        {
+            serverNameTxt->setText(stream.realitySettings.serverName);  
+            publicKeyTxt->setText(stream.realitySettings.publicKey);
+            shortIdTxt->setText(stream.realitySettings.shortId);
+            spiderXTxt->setText(stream.realitySettings.spiderX);
+            if (fingerprintIndexMap.contains(stream.realitySettings.fingerprint))
+                fingerprintCB->setCurrentIndex(fingerprintIndexMap[stream.realitySettings.fingerprint]);
+            else
+                LOG("Unsupported fingerprint value:", stream.realitySettings.fingerprint);
+        }
     }
 
-        tls_xtls_process(tls);
-
-        if (stream.security == "xtls")
-            tls_xtls_process(xtls);
-    }
     // TCP
     {
         tcpHeaderTypeCB->setCurrentText(stream.tcpSettings.header.type);
@@ -301,6 +322,8 @@ void StreamSettingsWidget::on_securityTypeCB_currentIndexChanged(int arg1)
 void StreamSettingsWidget::on_fingerprintCB_currentIndexChanged(int arg1)
 {
     stream.tlsSettings.fingerprint = fingerprintCB->itemText(arg1).toLower();
+    stream.xtlsSettings.fingerprint = fingerprintCB->itemText(arg1).toLower();
+    stream.realitySettings.fingerprint = fingerprintCB->itemText(arg1).toLower();
 }
 
 //
@@ -310,12 +333,27 @@ void StreamSettingsWidget::on_serverNameTxt_textEdited(const QString &arg1)
 {
     stream.tlsSettings.serverName = arg1.trimmed();
     stream.xtlsSettings.serverName = arg1.trimmed();
+    stream.realitySettings.serverName = arg1.trimmed();
 }
 
 void StreamSettingsWidget::on_allowInsecureCB_stateChanged(int arg1)
 {
     stream.tlsSettings.allowInsecure = arg1 == Qt::Checked;
     stream.xtlsSettings.allowInsecure = arg1 == Qt::Checked;
+}
+
+void StreamSettingsWidget::on_publicKeyTxt_textEdited(const QString &arg1)
+{
+    stream.realitySettings.publicKey = arg1.trimmed();
+}
+
+void StreamSettingsWidget::on_shortIdTxt_textEdited(const QString &arg1)
+{
+    stream.realitySettings.shortId = arg1.trimmed();
+}
+void StreamSettingsWidget::on_spiderXTxt_textEdited(const QString &arg1)
+{
+    stream.realitySettings.spiderX = arg1.trimmed();
 }
 
 void StreamSettingsWidget::on_alpnH2CB_stateChanged(int arg1)
