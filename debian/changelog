@@ -1,4 +1,11 @@
+qv2ray (2.7.2) unstable; urgency=medium
+
+  * add: support reality for xray.
+
+  -- nx111<gd.zhangdz@gmail.com>   Fri, 14 Jul 2023 08:45:49 +0800
+
 qv2ray (2.7.1) unstable; urgency=medium
+
   * fix: configuration check for xray.
   * add: support uTLS fingerprint for TLS/XTLS.
   * update: split alpn text to h2 and http/1.1 checkbox.
