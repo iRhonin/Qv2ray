@@ -317,6 +317,36 @@ void StreamSettingsWidget::on_transportCombo_currentIndexChanged(int arg1)
 void StreamSettingsWidget::on_securityTypeCB_currentIndexChanged(int arg1)
 {
     stream.security = securityTypeCB->itemText(arg1).toLower();
+    if (stream.security == "reality")
+    {
+        allowInsecureCB->setEnabled(false);
+        enableSessionResumptionCB->setEnabled(false);
+        disableSystemRoot->setEnabled(false);
+        labelALPN->setEnabled(false);
+        alpnH2CB->setEnabled(false);
+        alpnHttpCB->setEnabled(false);
+        labelPublicKey->setEnabled(true);
+        publicKeyTxt->setEnabled(true);
+        labelShortId->setEnabled(true);
+        shortIdTxt->setEnabled(true);
+        labelSpiderX->setEnabled(true);
+        spiderXTxt->setEnabled(true);
+    }
+    else
+    {
+        allowInsecureCB->setEnabled(true);
+        enableSessionResumptionCB->setEnabled(true);
+        disableSystemRoot->setEnabled(true);
+        labelALPN->setEnabled(true);
+        alpnH2CB->setEnabled(true);
+        alpnHttpCB->setEnabled(true);
+        labelPublicKey->setEnabled(false);
+        publicKeyTxt->setEnabled(false);
+        labelShortId->setEnabled(false);
+        shortIdTxt->setEnabled(false);
+        labelSpiderX->setEnabled(false);
+        spiderXTxt->setEnabled(false);
+    }
 }
 
 void StreamSettingsWidget::on_fingerprintCB_currentIndexChanged(int arg1)
@@ -359,28 +389,28 @@ void StreamSettingsWidget::on_spiderXTxt_textEdited(const QString &arg1)
 void StreamSettingsWidget::on_alpnH2CB_stateChanged(int arg1)
 {
     if (arg1 == Qt::Checked) {
-    	if (!stream.tlsSettings.alpn.contains("h2"))
-    	    stream.tlsSettings.alpn.insert(0,"h2");
-    	if (!stream.xtlsSettings.alpn.contains("h2"))
-    	    stream.xtlsSettings.alpn.insert(0,"h2");
+        if (!stream.tlsSettings.alpn.contains("h2"))
+            stream.tlsSettings.alpn.insert(0,"h2");
+        if (!stream.xtlsSettings.alpn.contains("h2"))
+            stream.xtlsSettings.alpn.insert(0,"h2");
 
     } else {
-    	stream.tlsSettings.alpn.removeAll("h2");
-    	stream.xtlsSettings.alpn.removeAll("h2");
+        stream.tlsSettings.alpn.removeAll("h2");
+        stream.xtlsSettings.alpn.removeAll("h2");
     }
 }
 
 void StreamSettingsWidget::on_alpnHttpCB_stateChanged(int arg1)
 {
     if (arg1 == Qt::Checked) {
-    	if (!stream.tlsSettings.alpn.contains("http/1.1"))
-    	    stream.tlsSettings.alpn.append("http/1.1");
-    	if (!stream.xtlsSettings.alpn.contains("http/1.1"))
-    	    stream.xtlsSettings.alpn.append("http/1.1");
+        if (!stream.tlsSettings.alpn.contains("http/1.1"))
+            stream.tlsSettings.alpn.append("http/1.1");
+        if (!stream.xtlsSettings.alpn.contains("http/1.1"))
+            stream.xtlsSettings.alpn.append("http/1.1");
 
     } else {
-    	stream.tlsSettings.alpn.removeAll("http/1.1");
-    	stream.xtlsSettings.alpn.removeAll("http/1.1");
+        stream.tlsSettings.alpn.removeAll("http/1.1");
+        stream.xtlsSettings.alpn.removeAll("http/1.1");
     }
 }
 
